@@ -5,6 +5,8 @@
 
 trigger:
 - main
+- dev
+- ft/setUp
 
 pool:
   vmImage: ubuntu-latest
