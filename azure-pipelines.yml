@@ -1,5 +1,5 @@
 
-name: add to cart
+name: add to cart.
 
 on:
   push:
