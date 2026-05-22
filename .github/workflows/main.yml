@@ -1,0 +1,44 @@
+name: Playwright Java CI
+
+on:
+  push:
+    branches: [ main, master, ft/setUp ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    name: Execute Automation Suite
+    runs-on: ubuntu-latest
+
+    # Crucial: Tells GitHub Actions to look inside your subfolder where pom.xml sits
+    defaults:
+      run:
+        working-directory: Azure-DevOps
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'oracle'
+          cache: 'maven'
+
+      - name: Install Playwright Browsers
+        run: |
+          mvn test-compile
+          mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install"
+
+      # Runs your tests inside a virtual frame buffer so headful (.setHeadless(false)) won't crash
+      - name: Run Playwright Tests (with Xvfb)
+        run: xvfb-run mvn test
+
+      - name: Upload Test Report Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testng-execution-results
+          path: Azure-DevOps/target/surefire-reports/
