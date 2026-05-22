@@ -1,4 +1,4 @@
-name: Playwright Java CI
+name: Playwright Java CI.
 
 on:
   push:
